@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group
+        android:id="@+id/menu_top"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/menuprincipal_home"
+            android:icon="@drawable/abc_vector_test"
+            android:title="@string/menuprincipal_inicio" />
+
+        <item
+            android:id="@+id/menuprincipal_clientes"
+            android:icon="@drawable/abc_vector_test"
+            android:title="@string/menuprincipal_clientes" />
+
+        <item
+            android:id="@+id/menuprincipal_prestamos"
+            android:icon="@drawable/abc_vector_test"
+            android:title="@string/menuprincipal_prestamos"
+            />
+
+        <item
+            android:id="@+id/menuprincipal_cobros"
+            android:icon="@drawable/abc_vector_test"
+            android:title="@string/menuprincipal_cobros"
+            />
+
+
+    </group>
+
+</menu>

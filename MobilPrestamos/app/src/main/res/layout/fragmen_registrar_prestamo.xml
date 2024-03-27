@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <LinearLayout
+      android:id="@+id/lyPrestamo"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="20dp"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      tools:visibility="visible"
+      android:orientation="vertical">
+
+      <LinearLayout
+          android:id="@+id/llCliente"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="vertical">
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="Cliente "
+              android:layout_weight="1"/>
+
+          <EditText
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"/>
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="Deuda Actual"
+              android:layout_weight="1"/>
+
+          <EditText
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"/>
+
+
+      </LinearLayout>
+
+      <LinearLayout
+          android:id="@+id/llDatos_Prestamo"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="vertical"
+          android:layout_marginTop="10dp">
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="Fecha desembolso "
+              android:layout_weight="1"/>
+
+          <EditText
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"/>
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="Monto"
+              android:layout_weight="1"/>
+
+          <EditText
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"/>
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="Periodo de amortización" />
+
+          <Spinner
+              android:layout_width="match_parent"
+              android:layout_height="50dp"/>
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="Interes mensual"/>
+
+          <EditText
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"/>
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="Plazo"/>
+          <Spinner
+              android:layout_width="match_parent"
+              android:layout_height="50dp"/>
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="Referencia"/>
+
+          <EditText
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"/>
+
+
+
+      </LinearLayout>
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="Detalle"
+          android:layout_marginTop="10dp"/>
+
+      <EditText
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"/>
+
+
+
+  </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

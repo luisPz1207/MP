@@ -1,0 +1,57 @@
+<resources>
+    <string name="app_name">MobilPrestamos_Kotlin_V1</string>
+    <string name="app_name_label">LOAND BUSINESS</string>
+
+    <!-- strings para componentes -->
+    <string name="button_login">Aceptar</string>
+    <string name="button_cancel">Cancelar</string>
+    <string name="Edittext_user">Usuario</string>
+    <string name="Edittext_pass">Contraseña</string>
+    <string name="dialog_caja_title">Registrar Capital</string>
+
+    <!-- String para modulos -->
+    <string name="clientes">Clientes</string>
+    <string name="home">Home</string>
+    <string name="prestamos">Prestamos</string>
+    <string name="login">Login</string>
+    <string name="cobros">Cobros</string>
+
+    <!-- String para prestamo -->
+    <string name="prestamo_deuda_actual">Deuda Actual</string>
+    <string name="prestamo_fecha_desembolo">Fecha desembolso</string>
+    <string name="prestamo_monto">Monto</string>
+    <string name="prestamo_periodo">Periodo de amortización</string>
+    <string name="prestamo_interes">Interes mensual</string>
+    <string name="prestamo_plazo">Plazo</string>
+    <string name="prestamo_referencia">Referencia</string>
+    <string name="prestamo_detalle">Detalle</string>
+    <string name="prestamo_sin_atraso">Sin atraso</string>
+    <string name="prestamo_con_atraso">Con atraso</string>
+
+    <!-- String para cliente -->
+    <string name="account_name">Nombres</string>
+    <string name="account_last_name">Apellidos</string>
+    <string name="account_telefono">Telefono</string>
+    <string name="account_cedula">Cedula</string>
+    <string name="account_celular_o_whatsapp">Celular/Whatsapp</string>
+    <string name="account_fecha_naciomiento">Fecha Nacimiento</string>
+    <string name="account_ocupacion">Ocupación</string>
+    <string name="account_nacionalidad">Nacionalidad</string>
+    <string name="account_vivienda">Vivienda</string>
+    <string name="account_correo">Correo</string>
+    <string name="account_direccion">Dirección</string>
+    <string name="account_provincia">Provincia</string>
+    <string name="account_municipio">Municipio</string>
+    <string name="account_sector">Sector</string>
+    <string name="account_direccion_trabajo">Dirección de trabajo</string>
+
+    <!-- strings para bottomsheets -->
+    <string name="detalle">Detalle</string>
+    <string name="editar">Editar</string>
+    <string name="eliminar">Eliminar</string>
+    <string name="contactar">Contactar</string>
+    <string name="recibo">Ver Recibo</string>
+    <string name="cobrar">Cobrar</string>
+
+
+</resources>
