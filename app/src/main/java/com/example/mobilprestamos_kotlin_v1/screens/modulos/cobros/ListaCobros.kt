@@ -14,6 +14,7 @@ import com.example.mobilprestamos_kotlin_v1.componentsUtils.BottomBarApp
 import com.example.mobilprestamos_kotlin_v1.componentsUtils.loadListCobros
 import com.example.mobilprestamos_kotlin_v1.models.AppMenuNavigation
 import com.example.mobilprestamos_kotlin_v1.models.MainViewModel
+import com.example.mobilprestamos_kotlin_v1.models.OpcionesSheet
 import com.example.mobilprestamos_kotlin_v1.models.listCollection
 import com.example.mobilprestamos_kotlin_v1.utils.Utils
 
@@ -54,13 +55,10 @@ fun listaCobros(navController: NavHostController, listaCobros: List<listCollecti
         AppMenuNavigation.ListaCobrosVencidos,
     )
     val mainViewModel: MainViewModel = viewModel()
-/*
+
     val listOpciones = listOf(
-        OpcionesSheet.detail,
-        OpcionesSheet.Edit,
-        OpcionesSheet.Contact,
-        OpcionesSheet.delete,
-    )*/
+        OpcionesSheet.detailCobro,
+    )
     
     Scaffold (
         bottomBar = {

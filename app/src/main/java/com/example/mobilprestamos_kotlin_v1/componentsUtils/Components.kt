@@ -5,6 +5,7 @@ import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -34,6 +35,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -42,11 +44,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.mobilprestamos_kotlin_v1.R
-import com.example.mobilprestamos_kotlin_v1.models.ListAccounts
+import com.example.mobilprestamos_kotlin_v1.models.Accounts
 import com.example.mobilprestamos_kotlin_v1.models.ListLoans
 import com.example.mobilprestamos_kotlin_v1.models.MainViewModel
 import com.example.mobilprestamos_kotlin_v1.models.OpcionesSheet
 import com.example.mobilprestamos_kotlin_v1.models.listCollection
+import com.example.mobilprestamos_kotlin_v1.utils.Globals
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -104,6 +108,21 @@ fun spaceViews(value: Int){
     Spacer(modifier = Modifier.padding(value.dp))
 }
 
+@Composable
+fun loaderProgress(){
+    Column (modifier = Modifier
+        .fillMaxWidth(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally){
+        CircularProgressIndicator(
+            modifier = Modifier.padding(5.dp),
+            color = colorResource(id = R.color.teal_700),
+            strokeWidth = Dp(value = 4f)
+        )
+    }
+}
+
+
 @Preview
 @Composable
 fun AlertDialog(
@@ -160,7 +179,9 @@ fun CustomDialogTextField(
                 spaceViews(value = 10)
                 OutlinedTextField(value = value, onValueChange = {value= it})
                 spaceViews(value = 10)
-                Row (modifier = Modifier.align(Alignment.End).padding(end= 10.dp)){
+                Row (modifier = Modifier
+                    .align(Alignment.End)
+                    .padding(end = 10.dp)){
                     ElevatedButton(onClick = { onDimiss()},
                         colors = ButtonDefaults.buttonColors(containerColor = Color.White)) {
                         Text(text = "Cancelar", color = colorResource(id = R.color.sl_dark_green))
@@ -178,7 +199,7 @@ fun CustomDialogTextField(
 
 //// CLIENTES ////
 @Composable
-fun loadList(navController: NavHostController, list: List<ListAccounts>){
+fun loadList(navController: NavHostController, list: List<Accounts>){
     val listAccounts = list
     LazyColumn(contentPadding = PaddingValues(16.dp)){
         items(listAccounts){item->
@@ -189,11 +210,12 @@ fun loadList(navController: NavHostController, list: List<ListAccounts>){
 
 
 @Composable
-fun rows(item: ListAccounts, navController: NavHostController){
+fun rows(item: Accounts, navController: NavHostController){
     val masInfo = remember {
         mutableStateOf(false)
     }
     val mainViewModel: MainViewModel = viewModel()
+
     ElevatedCard(
         elevation = CardDefaults.cardElevation(
             defaultElevation = 6.dp
@@ -206,13 +228,14 @@ fun rows(item: ListAccounts, navController: NavHostController){
             )
             .background(colorResource(id = R.color.white))
             .clickable {
+                mainViewModel.accountID = item.id.toString()
                 mainViewModel.showBottomSheet = true
             }
             .padding(20.dp)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = item.name,
+                    text = item.nombre,
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.weight(1f)
                 )
@@ -227,7 +250,7 @@ fun rows(item: ListAccounts, navController: NavHostController){
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = item.address,
+                    text = item.direccion,
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.weight(1f)
                 )
@@ -236,7 +259,7 @@ fun rows(item: ListAccounts, navController: NavHostController){
             if (masInfo.value) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
-                        text = item.amount,
+                        text = item.identificacion,
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier.weight(1f)
                     )
@@ -442,14 +465,30 @@ fun contentBottomSheet(navController: NavHostController, listItem: List<Opciones
                             .fillMaxWidth()
                             .padding(top = 20.dp)
                             .clickable {
-                                scope
-                                    .launch {
+                                mainViewModel.showLoaderProgress = true
+                                if (item.typeAction == Globals.ELIMINAR) {
+                                    mainViewModel.DeleteAccounts(mainViewModel.accountID)
+                                }
+                                if (item.typeAction == Globals.EDITAR) {
+                                    mainViewModel.newAccount = false
+                                    navController.navigate(item.ruta+mainViewModel.accountID)
+                                }
+                                if(item.typeAction == Globals.CONTACTAR){
+                                  /*  val inte = Intent(
+                                        Intent.ACTION_CALL,
+                                        Uri.parse("tel${8296969667}")
+                                    )*/
+
+                                }
+                                scope.launch {
                                         stateSheet.hide()
+                                        delay(1000)
                                     }
                                     .invokeOnCompletion {
                                         mainViewModel.showBottomSheet = false
+                                        mainViewModel.showLoaderProgress = false
                                     }
-                                navController.navigate(item.ruta)
+                               // navController.navigate(item.ruta)
                             }
             ){
                 Icon( item.icon, contentDescription ="")

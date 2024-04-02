@@ -8,3 +8,4 @@ enum class Utils (val type: String){
     TYPE_PRESTAMOS_REALIZADOS( "PR"),
     TYPE_PRESTAMOS_PENDIENTES( "PP"),
 }
+

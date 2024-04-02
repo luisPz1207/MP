@@ -2,22 +2,28 @@ package com.example.mobilprestamos_kotlin_v1.screens.modulos.clientes
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -31,39 +37,53 @@ import androidx.navigation.NavHostController
 import com.example.mobilprestamos_kotlin_v1.R
 import com.example.mobilprestamos_kotlin_v1.componentsUtils.BottomSheet
 import com.example.mobilprestamos_kotlin_v1.componentsUtils.loadList
+import com.example.mobilprestamos_kotlin_v1.componentsUtils.loaderProgress
+import com.example.mobilprestamos_kotlin_v1.models.AccountsViewModel
 import com.example.mobilprestamos_kotlin_v1.models.AppMenuLateralHome
 import com.example.mobilprestamos_kotlin_v1.models.AppScreens
-import com.example.mobilprestamos_kotlin_v1.models.ListAccounts.*
 import com.example.mobilprestamos_kotlin_v1.models.MainViewModel
-import com.example.mobilprestamos_kotlin_v1.models.OpcionesSheet.*
+import com.example.mobilprestamos_kotlin_v1.models.OpcionesSheet.Contact
+import com.example.mobilprestamos_kotlin_v1.models.OpcionesSheet.Edit
+import com.example.mobilprestamos_kotlin_v1.models.OpcionesSheet.delete
+import com.example.mobilprestamos_kotlin_v1.models.OpcionesSheet.detailCliente
 import com.example.mobilprestamos_kotlin_v1.navigations.CurrentRoute
+import com.example.mobilprestamos_kotlin_v1.utils.ApiService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
 fun loadheader(navController: NavHostController){
-    loadViews(navController)
+    val accountsViewModel: AccountsViewModel = viewModel()
+
+    loadViews(navController, accountsViewModel)
 }
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun loadViews(navController: NavHostController){
+fun loadViews(navController: NavHostController, accountsViewModel: AccountsViewModel){
     val label = LocalContext.current.getString(R.string.clientes)
+    var valueFilter by remember {
+        mutableStateOf("")
+    }
     val scope = rememberCoroutineScope()
-    val items = listOf(
-        items_Accounts,
-        items_Accounts2,
-        items_Accounts3,
-        items_Accounts4
-    )
+    val service = ApiService.instance
+    val items by accountsViewModel._list_Accounts.observeAsState()
     val mainViewModel: MainViewModel = viewModel()
+
     val listOpciones = listOf(
-        detail,
+        detailCliente,
         Edit,
-        cobrar,
-        verRecibo
+        Contact,
+        delete
     )
+
+    var query by remember {
+        mutableStateOf("")
+    }
+    var active by remember {
+        mutableStateOf(false)
+    }
 
     Scaffold(
        /* topBar = {
@@ -79,15 +99,59 @@ fun loadViews(navController: NavHostController){
         Box(modifier = androidx.compose.ui.Modifier
             .padding(padding)
             .fillMaxSize()) {
-            loadList(navController = navController, list = items)
-            if(mainViewModel.showBottomSheet) {
-                BottomSheet(navController = navController, listOpciones)
+/*
+            SearchBar(query = query,
+                onQueryChange = {query = it},
+                onSearch = {},
+                active = active,
+                onActiveChange = {active = it}
+            ) {
+                val filterCli = clientes.filter { it.contains(query, true) }
+                filterCli.forEach{item->
+                    Text(text = item)
+                }
+            }*/
+
+            Column(modifier = Modifier
+                .fillMaxSize()
+                .padding(10.dp)) {
+
+                OutlinedTextField(
+                    value = valueFilter,
+                    onValueChange = {valueFilter = it},
+                    label = { Text(LocalContext.current.getString(R.string.clientes)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    trailingIcon = {
+                        IconButton(
+                            onClick = {
+                                scope.launch{
+                                    accountsViewModel.filtrarClientes(valueFilter)
+                                }
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Search,
+                                contentDescription = "Clear"
+                            )
+                        }
+                    }
+                )
+                if(accountsViewModel.showList) {
+                    items?.let { loadList(navController = navController, list = it) }
+                }
+                if(mainViewModel.showLoaderProgress){
+                    loaderProgress()
+                }
+                if(mainViewModel.showBottomSheet) {
+                    BottomSheet(navController = navController, listOpciones)
+                }
             }
+
+
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun bottomBar(navController: NavHostController){
     val items_menu_inferior = listOf(
@@ -123,7 +187,7 @@ fun FabBottom(scope: CoroutineScope, navController: NavHostController){
     }
     FloatingActionButton(onClick = {
         scope.launch {
-            navController.navigate(AppScreens.CrearCliente.route)
+            navController.navigate(AppScreens.CrearCliente.route+"0")
         }
     },
         shape = CircleShape,
@@ -133,68 +197,3 @@ fun FabBottom(scope: CoroutineScope, navController: NavHostController){
         Icon(Icons.Filled.Add , contentDescription = "New")
     }
 }
-
-/*
-@Composable
-fun loadListAccounts(){
-    val listAccounts = listOf(
-        ListAccounts.items_Accounts,
-        ListAccounts.items_Accounts2,
-        ListAccounts.items_Accounts3,
-        ListAccounts.items_Accounts4,
-    )
-    LazyColumn(contentPadding = PaddingValues(16.dp)){
-        items(listAccounts){item->
-            rows(item)
-            Divider()
-        }
-    }
-}*/
-/*
-@Composable
-fun rows(item: ListAccounts){
-    val masInfo = remember {
-        mutableStateOf(false)
-    }
-    Column (modifier = Modifier
-        .animateContentSize(
-            animationSpec = tween(120, 0, LinearEasing)
-        )
-        .background(colorResource(id = R.color.orange50))
-    ){
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = item.name,
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.weight(1f)
-            )
-            IconButton(onClick = {
-                masInfo.value = !masInfo.value
-            }) {
-                Icon(
-                    if (masInfo.value) Icons.Default.Remove
-                    else Icons.Default.Add, contentDescription = "mas información"
-                )
-            }
-        }
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = item.address,
-                style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier.weight(1f)
-            )
-        }
-
-        if(masInfo.value){
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = item.amount,
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.weight(1f)
-                )
-            }
-        }
-    }
-
-}
- */

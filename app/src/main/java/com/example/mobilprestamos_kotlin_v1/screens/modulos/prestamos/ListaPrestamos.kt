@@ -1,18 +1,26 @@
 package com.example.mobilprestamos_kotlin_v1.screens.modulos.prestamos
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,10 +39,10 @@ import com.example.mobilprestamos_kotlin_v1.componentsUtils.BottomBarApp
 import com.example.mobilprestamos_kotlin_v1.componentsUtils.BottomSheet
 import com.example.mobilprestamos_kotlin_v1.componentsUtils.loadListPrestamos
 import com.example.mobilprestamos_kotlin_v1.models.AppMenuNavigation
-import com.example.mobilprestamos_kotlin_v1.models.AppScreens
 import com.example.mobilprestamos_kotlin_v1.models.ListLoans
 import com.example.mobilprestamos_kotlin_v1.models.MainViewModel
 import com.example.mobilprestamos_kotlin_v1.models.OpcionesSheet.*
+import com.example.mobilprestamos_kotlin_v1.screens.DetailActivity
 import com.example.mobilprestamos_kotlin_v1.utils.Utils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -72,9 +80,10 @@ fun TipolistaCobros(type: String): List<ListLoans> {
     return list
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun loadsCont(navController: NavHostController, list: List<ListLoans>){
+fun loadsCont(navController: NavHostController, list: List<ListLoans>) {
     val label = LocalContext.current.getString(R.string.prestamos)
     val items = listOf(
         AppMenuNavigation.ListaPrestamosPendientes,
@@ -84,43 +93,77 @@ fun loadsCont(navController: NavHostController, list: List<ListLoans>){
     val scope = rememberCoroutineScope()
     val mainViewModel: MainViewModel = viewModel()
     val listOpciones = listOf(
-        detail,
+        detailPrestamo,
         Edit,
         cobrar,
         verRecibo
     )
 
-    Scaffold (
-      /*  topBar = {
+    var query by remember {
+        mutableStateOf("")
+    }
+    var active by remember {
+        mutableStateOf(false)
+    }
+
+    Scaffold(
+        /*  topBar = {
             TopBarBackPress(navController = navController, label)
         },*/
-        floatingActionButton = { Fab(scope, navController)},
+        floatingActionButton = { Fab(scope, navController) },
         floatingActionButtonPosition = FabPosition.End,
         bottomBar = {
             BottomBarApp(navController, items)
         },
-    ) {padding->
-        Box(modifier = Modifier
-            .padding(padding)
-            .fillMaxSize()
-            .background(color = Color.White)) {
-            loadListPrestamos(navController, list)
-            if(mainViewModel.showBottomSheet) {
+    ) { padding ->
+
+        Box(
+            modifier = Modifier
+                .padding(padding)
+                .fillMaxSize()
+                .background(color = Color.White)
+        ) {
+            Column(modifier = Modifier
+                .fillMaxSize()) {
+                OutlinedTextField(
+                    value = "",
+                    onValueChange = { },
+                    label = { Text(LocalContext.current.getString(R.string.clientes)) },
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    trailingIcon = {
+                        IconButton(
+                            onClick = {
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Search,
+                                contentDescription = "Clear"
+                            )
+                        }
+                    }
+                )
+
+                loadListPrestamos(navController, list)
+            }
+            if (mainViewModel.showBottomSheet) {
                 BottomSheet(navController = navController, listOpciones)
             }
 
         }
-    }
+}
+
 }
 
 @Composable
 fun Fab(scope: CoroutineScope, navController: NavHostController){
-    var navDetail by remember {
-        mutableStateOf(false)
-    }
+    val context = LocalContext.current.applicationContext
     FloatingActionButton(onClick = {
         scope.launch {
-            navController.navigate(AppScreens.PrestamosDetail.route)
+           /// navController.navigate(AppScreens.PrestamosDetail.route)
+            val intent = Intent(context, DetailActivity::class.java )
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent)
                      }
     },
         shape = CircleShape,
